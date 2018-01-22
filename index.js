@@ -236,6 +236,7 @@ function sendCurrencyScreen(ctx) {
 }
 
 function sendMap(ctx) {
+  // https://www.google.com/maps?q=54.6994947260683,20.5036172478323
   ctx.replyWithLocation(54.699484, 20.503634)
 }
 
