@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 const Telegraf = require('telegraf')
-const fs = require('fs')
+const {promisify} = require('util')
 const axios = require('axios')
 const _ = require('lodash')
 
@@ -15,6 +15,7 @@ const KB = {
   picture: 'Картинки',
   cat: 'Котик',
   car: 'Машина',
+  map: 'Карта',
   back: 'Назад'
 }
 
@@ -47,6 +48,9 @@ bot.on('message', ctx => {
     case KB.back:
       sendGreeting(ctx, false)
       break
+    case KB.map:
+      sendMap(ctx)
+      break  
     case KB.car:
     case KB.cat:
       sendPictureByName(ctx)
@@ -54,7 +58,6 @@ bot.on('message', ctx => {
   }
 
 })
-
 
 // bot.command('help', ctx => ctx.reply('Try send a sticker!'))
 // bot.hears('hi', ctx => ctx.reply('Hey there!'))
@@ -95,7 +98,7 @@ bot.on('message', ctx => {
 //     if (!state[userId]){
 //         state[userId] = {};
 //     }
-    
+
 //     state[userId].index = 0;
 
 //     axios
@@ -109,7 +112,7 @@ bot.on('message', ctx => {
 
 //             const link = `https://reddit.com/${data.children[0].data.permalink}`
 
-//             return ctx.reply(link, 
+//             return ctx.reply(link,
 //                     Markup.inlineKeyboard([
 //                         Markup.callbackButton('➡️ Next', subreddit),
 //                     ]).extra()
@@ -124,7 +127,7 @@ bot.on('message', ctx => {
 // bot.on('callback_query', ctx => {
 //   const subreddit = ctx.update.callback_query.data;
 //   const userId = ctx.update.callback_query.from.id;
-  
+
 //   let type;
 //   let index;
 
@@ -140,7 +143,7 @@ bot.on('message', ctx => {
 //   }
 
 //   ctx.answerCbQuery('Wait...')
-  
+
 //   axios.get(`https://reddit.com/r/${subreddit}/${type}.json?limit=10`)
 //     .then(res => {
 
@@ -169,7 +172,7 @@ bot.on('callback_query', ctx => {
   const symbol = 'RUB';
 
   ctx.answerCbQuery('Wait...')
-  
+
   axios.get(`https://api.fixer.io/latest?symbols=${symbol}&base=${base}`)
     .then(res => {
 
@@ -190,6 +193,7 @@ function sendGreeting(ctx, sayHello = true) {
     return ctx.reply(text,
         Markup.keyboard([
          [KB.currency, KB.picture],
+         [KB.map]
         ]).extra()
       )
 }
@@ -229,6 +233,10 @@ function sendCurrencyScreen(ctx) {
           Markup.callbackButton('Евро', 'EUR'),
         ]).extra()
       )
+}
+
+function sendMap(ctx) {
+  ctx.replyWithLocation(54.699484, 20.503634)
 }
 
 bot.startPolling()
